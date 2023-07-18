@@ -62,6 +62,10 @@ class ApiStatus extends Component {
       });
   }
 
+  handleTerminate() {
+    this.props.sco.closeScormAPIConnection()
+  }
+
   render() {
     const { setStatus, apiConnected, completionStatus, scormVersion, suspendData } = this.props.sco;
 
@@ -150,6 +154,7 @@ class ApiStatus extends Component {
             <button type="submit" className="button-primary" disabled={this.state.score.status === "0"}>Submit Score</button>
           </div>
         </form>
+        <button className='button-primary' onClick={this.handleTerminate}>Set LMS Finish</button>
       </section>
     );
   }

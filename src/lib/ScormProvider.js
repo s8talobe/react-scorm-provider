@@ -15,6 +15,7 @@ export const ScoContext = React.createContext({
   completionStatus: 'unknown',
   suspendData: {},
   scormVersion: '',
+  closeScormAPIConnection: () => {},
   getSuspendData: () => {},
   setSuspendData: () => {},
   clearSuspendData: () => {},
@@ -215,6 +216,7 @@ class ScormProvider extends Component {
 
     const val = {
       ...this.state,
+      closeScormAPIConnection: this.closeScormAPIConnection,
       getSuspendData: this.getSuspendData,
       setSuspendData: this.setSuspendData,
       clearSuspendData: this.clearSuspendData,
