@@ -15,14 +15,15 @@ export const ScoContext = React.createContext({
   completionStatus: 'unknown',
   suspendData: {},
   scormVersion: '',
-  closeScormAPIConnection: () => {},
-  getSuspendData: () => {},
-  setSuspendData: () => {},
-  clearSuspendData: () => {},
-  setStatus: () => {},
-  setScore: () => {},
-  set: () => {},
-  get: () => {}
+  closeScormAPIConnection: () => { },
+  getSuspendData: () => { },
+  setSuspendData: () => { },
+  setSuspendDataRaw: () => { },
+  clearSuspendData: () => { },
+  setStatus: () => { },
+  setScore: () => { },
+  set: () => { },
+  get: () => { }
 });
 
 class ScormProvider extends Component {
@@ -87,7 +88,6 @@ class ScormProvider extends Component {
         apiConnected: false,
         learnerName: '',
         completionStatus: 'unknown',
-        suspendData: {},
         scormVersion: ''
       });
     } else {
@@ -117,7 +117,7 @@ class ScormProvider extends Component {
 
       if (!this.state.apiConnected) return reject('SCORM API not connected');
 
-      let currentData = {...this.state.suspendData} || {};
+      let currentData = { ...this.state.suspendData } || {};
       if (isNumOrString(key)) currentData[key] = val;
       const success = SCORM.set('cmi.suspend_data', JSON.stringify(currentData));
       if (!success) return reject('could not set the suspend data provided');
@@ -129,6 +129,22 @@ class ScormProvider extends Component {
       });
     });
   }
+
+  setSuspendDataRaw(data) {
+    return new Promise((resolve, reject) => {
+
+      if (!this.state.apiConnected) return reject('SCORM API not connected');
+      const success = SCORM.set('cmi.suspend_data', JSON.stringify(data));
+      if (!success) return reject('could not set the suspend data provided');
+      this.setState({
+        suspendData: data
+      }, () => {
+        SCORM.save();
+        return resolve(this.state.suspendData);
+      });
+    });
+  }
+
 
   clearSuspendData() {
     return new Promise((resolve, reject) => {
@@ -219,6 +235,7 @@ class ScormProvider extends Component {
       closeScormAPIConnection: this.closeScormAPIConnection,
       getSuspendData: this.getSuspendData,
       setSuspendData: this.setSuspendData,
+      setSuspendDataRaw: this.setSuspendDataRaw,
       clearSuspendData: this.clearSuspendData,
       setStatus: this.setStatus,
       setScore: this.setScore,
